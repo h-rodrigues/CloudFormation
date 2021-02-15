@@ -1,7 +1,7 @@
 
 # IAC for GYANT Challenge App
 
-#Files 
+# Files 
 
 01-ecr.yaml (This template provision a private container registry )
 02-vpc.yaml (This template provision the Network for the environment)
@@ -14,9 +14,9 @@ architecture.png (Graphic detail of the stack)
 
 
 
-#Setup
+# Setup
 
-##1- Clone the challenge repo and had the Dockerfile
+## 1- Clone the challenge repo and had the Dockerfile
 ```sh
 [hrodrigues@zelda test]$ git clone https://github.com/GYANTINC/gyant-challenge-app.git
 Cloning into 'gyant-challenge-app'...
@@ -30,21 +30,21 @@ Resolving deltas: 100% (2/2), done.
 [hrodrigues@zelda test]$ cp Dockerfile gyant-challenge-app/
 ```
 
-##2- Create the Docker Registry
-###2.1 - Create stack
+## 2- Create the Docker Registry
+### 2.1 - Create stack
 ```sh
 [hrodrigues@zelda test]$ aws cloudformation create-stack --stack-name ecrrepo --template-body file://\$PWD/01-ecr.yaml 
 {
     "StackId": "arn:aws:cloudformation:eu-west-1:534451283295:stack/ecrrepo/762360f0-6f7c-11eb-9320-0665d7300625"
 }
 ```
-###2.2 - Get URI
+### 2.2 - Get URI
 ```sh
 [hrodrigues@zelda test]$ aws cloudformation describe-stacks --stack-name ecrrepo --query "Stacks[0].Outputs[?OutputKey=='GyantincContainerUri'].OutputValue" --output text
 534451283295.dkr.ecr.eu-west-1.amazonaws.com/gyant-challenge-app
 ```
 
-###2.3- Authenticate in ECR, build and push image
+### 2.3- Authenticate in ECR, build and push image
 ```sh
 [hrodrigues@zelda test]$ cd gyant-challenge-app/
 [hrodrigues@zelda gyant-challenge-app]$ aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 534451283295.dkr.ecr.eu-west-1.amazonaws.com
@@ -128,40 +128,40 @@ Writing manifest to image destination
 Storing signatures
 ```
 
-##3- Create VPC
+## 3- Create VPC
 ```sh
 [hrodrigues@zelda test]$ aws cloudformation create-stack --stack-name vpc --template-body file://\$PWD/02-vpc.yaml 
 {
     "StackId": "arn:aws:cloudformation:eu-west-1:534451283295:stack/vpc/a98e6a10-6f7d-11eb-8425-0264e01e178b"
 }
 ```
-4- Create IAM Roles
+## 4- Create IAM Roles
 ```sh
 [hrodrigues@zelda test]$ aws cloudformation create-stack --stack-name iamroles --template-body file://\$PWD/03-iam.yaml --capabilities CAPABILITY_IAM
 {
     "StackId": "arn:aws:cloudformation:eu-west-1:534451283295:stack/iamroles/2b7459e0-6f7e-11eb-9243-06e31ff0cd99"
 }
 ```
-5- Create ECS Stack
+## 5- Create ECS Stack
 ```sh
 [hrodrigues@zelda test]$ aws cloudformation create-stack --stack-name ecsapp --template-body file://\$PWD/04-ecs.yaml
 {
     "StackId": "arn:aws:cloudformation:eu-west-1:534451283295:stack/ecsapp/78b67d00-6f7e-11eb-9ce7-06e549b26cbb"
 }
 ```
-5.1 GET URL
+### 5.1 GET URL
 ```sh
 [hrodrigues@zelda test]$ aws cloudformation describe-stacks --stack-name ecsapp --query "Stacks[0].Outputs[?OutputKey=='UrlEndpoint'].OutputValue" --output text
 http://gyantinc-services-1667129062.eu-west-1.elb.amazonaws.com
 ```
-6- Configure CloudWatch Alarmes
+## 6- Configure CloudWatch Alarmes
 ```sh
 [hrodrigues@zelda test]$ aws cloudformation create-stack --stack-name alarm --template-body file://\$PWD/05-alarm.yaml --parameters ParameterKey=MailingListEmail,ParameterValue=yugomail@gmail.com
 {
     "StackId": "arn:aws:cloudformation:eu-west-1:534451283295:stack/alarm/18e56da0-6f83-11eb-8285-06282834de15"
 }
 ```
-7- Create Waf stack
+## 7- Create Waf stack
 ```sh
 [hrodrigues@zelda test]$ aws cloudformation create-stack --stack-name waf --template-body file://\$PWD/06-waf.yaml --parameters ParameterKey=IpRange,ParameterValue=217.129.241.137/32
 {
