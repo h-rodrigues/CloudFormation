@@ -17,6 +17,8 @@ architecture.png (Graphic detail of the stack)
 # Setup
 
 ## 1- Clone the challenge repo and had the Dockerfile
+
+*Note: Download the Zip to your folder.
 ```sh
 [hrodrigues@zelda test]$ git clone https://github.com/GYANTINC/gyant-challenge-app.git
 Cloning into 'gyant-challenge-app'...
@@ -155,6 +157,9 @@ Storing signatures
 http://gyantinc-services-1667129062.eu-west-1.elb.amazonaws.com
 ```
 ## 6- Configure CloudWatch Alarmes
+
+*Note: Change the ParameterValue to the desired email address
+
 ```sh
 [hrodrigues@zelda test]$ aws cloudformation create-stack --stack-name alarm --template-body file://\$PWD/05-alarm.yaml --parameters ParameterKey=MailingListEmail,ParameterValue=yugomail@gmail.com
 {
@@ -162,6 +167,9 @@ http://gyantinc-services-1667129062.eu-west-1.elb.amazonaws.com
 }
 ```
 ## 7- Create Waf stack
+
+*Note: Change the ParameterValue to the desired network
+
 ```sh
 [hrodrigues@zelda test]$ aws cloudformation create-stack --stack-name waf --template-body file://\$PWD/06-waf.yaml --parameters ParameterKey=IpRange,ParameterValue=217.129.241.137/32
 {
